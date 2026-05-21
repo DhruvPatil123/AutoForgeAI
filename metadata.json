@@ -1,0 +1,6 @@
+{
+  "name": "AutoForge AI",
+  "description": "An autonomous software development platform. AutoForge AI combines LLMs, agentic planning, and sandboxed execution to write, test, debug, and repair source code autonomously from specifications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

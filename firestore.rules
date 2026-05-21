@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Check helper for IDs
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    // Check helper for valid project structure
+    function isValidProject(data) {
+      return data.keys().hasAll(['specification', 'language', 'createdAt'])
+        && data.specification is string && data.specification.size() <= 10000
+        && data.language is string && data.language.size() <= 32;
+    }
+
+    // Check helper for valid audit log structure
+    function isValidAuditLog(data) {
+      return data.keys().hasAll(['projectId', 'createdAt'])
+        && data.projectId is string && data.projectId.size() <= 128;
+    }
+    
+    match /projects/{projectId} {
+      allow get, list: if true;
+      allow create: if isValidId(projectId) && isValidProject(request.resource.data);
+      allow update: if isValidId(projectId) && isValidProject(request.resource.data)
+        && request.resource.data.language == resource.data.language;
+      allow delete: if false;
+      
+      match /audit_logs/{logId} {
+        allow get, list: if true;
+        allow create: if isValidId(logId) && isValidAuditLog(request.resource.data)
+          && request.resource.data.projectId == projectId;
+        allow update, delete: if false;
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project History",
+      "description": "Stores user specification prompts, code outputs, active file path formats, and metrics.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Document ID matching standard alphanumeric keys." },
+        "specification": { "type": "string", "description": "Raw requirements prompt processed by AutoForge." },
+        "language": { "type": "string", "description": "Language choice selector e.g. typescript, python, rust, go." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "ISO timestamp or Firebase server time when project was created." },
+        "files": { "type": "array", "description": "List of files produced during code-generation runs." },
+        "architecture": { "type": "object", "description": "Solutions modules and telemetry data routes." },
+        "testReport": { "type": "object", "description": "Assertions metrics reporting coverage, pass rate, duration." }
+      },
+      "required": ["specification", "language", "createdAt"]
+    },
+    "AuditLog": {
+      "title": "Continuous Audit Logs",
+      "description": "Stores security alerts, performance issues, style checks, and iterative self-repair attempts.",
+      "type": "object",
+      "properties": {
+        "projectId": { "type": "string", "description": "The associated project ID document." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "ISO timestamp for this checklist audit event." },
+        "securityAlerts": { "type": "array", "description": "List of warnings and critical vulnerabilities flagged by security reviewer." },
+        "performanceOptimizations": { "type": "array", "description": "List of algorithmic cleanups and code modifications proposed by optimizer." },
+        "styleIssues": { "type": "array", "description": "Style violations detected by linter." },
+        "repairHistory": { "type": "array", "description": "Sequence of self-repair feedback runs executed during test verification." }
+      },
+      "required": ["projectId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "The collections for all AutoForge playground runs."
+    },
+    "/projects/{projectId}/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Audit trails and repair sequences corresponding to a code generation run."
+    }
+  }
+}
